@@ -1,0 +1,254 @@
+tests:
+- name: instant_initial
+  args:
+  - --duree
+  - '0'
+  expected_exit: 0
+  expected_stdout: 'temps;phase;nord_sud;est_ouest;restant;urgence
+
+    0;TOUT_ROUGE_AVANT_NS;ROUGE;ROUGE;1;non'
+  expected_stderr: ''
+- name: premier_vert
+  args:
+  - --duree
+  - '1'
+  expected_exit: 0
+  expected_stdout: 'temps;phase;nord_sud;est_ouest;restant;urgence
+
+    0;TOUT_ROUGE_AVANT_NS;ROUGE;ROUGE;1;non
+
+    1;VERT_NS;VERT;ROUGE;4;non'
+  expected_stderr: ''
+- name: urgence_initiale
+  args:
+  - --duree
+  - '2'
+  - --arret
+  - '0'
+  expected_exit: 0
+  expected_stdout: 'temps;phase;nord_sud;est_ouest;restant;urgence
+
+    0;URGENCE;ROUGE;ROUGE;0;oui
+
+    1;URGENCE;ROUGE;ROUGE;0;oui
+
+    2;URGENCE;ROUGE;ROUGE;0;oui'
+  expected_stderr: ''
+- name: cycle_court
+  args:
+  - --duree
+  - '6'
+  - --vert-ns
+  - '1'
+  - --vert-eo
+  - '1'
+  - --orange
+  - '1'
+  expected_exit: 0
+  expected_stdout: 'temps;phase;nord_sud;est_ouest;restant;urgence
+
+    0;TOUT_ROUGE_AVANT_NS;ROUGE;ROUGE;1;non
+
+    1;VERT_NS;VERT;ROUGE;1;non
+
+    2;ORANGE_NS;ORANGE;ROUGE;1;non
+
+    3;TOUT_ROUGE_AVANT_EO;ROUGE;ROUGE;1;non
+
+    4;VERT_EO;ROUGE;VERT;1;non
+
+    5;ORANGE_EO;ROUGE;ORANGE;1;non
+
+    6;TOUT_ROUGE_AVANT_NS;ROUGE;ROUGE;1;non'
+  expected_stderr: ''
+- name: aide
+  args:
+  - --help
+  expected_exit: 0
+  expected_stdout: 'Usage: feux_tricolores [options]
+
+    --duree N       Simulation de 0 a 3600 secondes (defaut 20)
+
+    --vert-ns N     Vert Nord-Sud, de 1 a 3600 (defaut 4)
+
+    --vert-eo N     Vert Est-Ouest, de 1 a 3600 (defaut 4)
+
+    --orange N      Orange, de 1 a 3600 (defaut 2)
+
+    --tout-rouge N  Intervalle tout rouge, de 1 a 3600 (defaut 1)
+
+    --arret N       Instant d''arret d''urgence, optionnel
+
+    --reprise N     Instant de reprise apres l''arret, optionnel
+
+    --help          Afficher cette aide'
+  expected_stderr: ''
+- name: option_inconnue
+  args:
+  - --intrus
+  - '1'
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Option inconnue: --intrus'
+- name: valeur_manquante
+  args:
+  - --duree
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Valeur manquante: --duree'
+- name: option_dupliquee
+  args:
+  - --duree
+  - '1'
+  - --duree
+  - '2'
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Option repetee: --duree'
+- name: aide_melangee
+  args:
+  - --help
+  - --duree
+  - '1'
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: --help doit etre utilise seul'
+- name: texte
+  args:
+  - --duree
+  - abc
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Entier decimal attendu: abc'
+- name: suffixe
+  args:
+  - --duree
+  - 1abc
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Entier decimal attendu: 1abc'
+- name: decimal
+  args:
+  - --duree
+  - '1.5'
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Entier decimal attendu: 1.5'
+- name: signe_plus
+  args:
+  - --duree
+  - '+1'
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Entier decimal attendu: +1'
+- name: espace
+  args:
+  - --duree
+  - ' 1'
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Entier decimal attendu:  1'
+- name: vide
+  args:
+  - --duree
+  - ''
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Entier decimal attendu: '
+- name: entier_trop_grand
+  args:
+  - --duree
+  - '9999999999999999999'
+  expected_exit: 2
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Entier decimal attendu: 9999999999999999999'
+- name: duree_negative
+  args:
+  - --duree
+  - '-1'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: La duree de simulation doit etre entre 0 et 3600'
+- name: duree_trop_grande
+  args:
+  - --duree
+  - '3601'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: La duree de simulation doit etre entre 0 et 3600'
+- name: vert_ns_nul
+  args:
+  - --vert-ns
+  - '0'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Les durees des phases doivent etre entre 1 et 3600'
+- name: vert_eo_negatif
+  args:
+  - --vert-eo
+  - '-1'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Les durees des phases doivent etre entre 1 et 3600'
+- name: orange_nul
+  args:
+  - --orange
+  - '0'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Les durees des phases doivent etre entre 1 et 3600'
+- name: tout_rouge_nul
+  args:
+  - --tout-rouge
+  - '0'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Les durees des phases doivent etre entre 1 et 3600'
+- name: phase_trop_longue
+  args:
+  - --vert-ns
+  - '3601'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Les durees des phases doivent etre entre 1 et 3600'
+- name: reprise_sans_arret
+  args:
+  - --reprise
+  - '5'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: La reprise exige un arret'
+- name: reprise_avant_arret
+  args:
+  - --arret
+  - '5'
+  - --reprise
+  - '4'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: La reprise doit suivre strictement l''arret'
+- name: evenements_simultanes
+  args:
+  - --arret
+  - '5'
+  - --reprise
+  - '5'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: La reprise doit suivre strictement l''arret'
+- name: arret_hors_duree
+  args:
+  - --duree
+  - '2'
+  - --arret
+  - '3'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Un evenement doit etre compris dans la simulation'
+- name: arret_negatif
+  args:
+  - --arret
+  - '-1'
+  expected_exit: 3
+  expected_stdout: ''
+  expected_stderr: 'Erreur: Un evenement doit etre compris dans la simulation'

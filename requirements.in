@@ -1,0 +1,4 @@
+pytest
+PyYAML
+cmake
+ninja

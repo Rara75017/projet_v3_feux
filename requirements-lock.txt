@@ -1,0 +1,12 @@
+# Ensemble fige pour ce laboratoire, valide sous Python 3.12 / Linux.
+# Cible Windows : Python 3.11 a 3.14, de preference 3.12 x64.
+# Versions choisies pour la reproductibilite, pas une promesse de derniere version.
+pytest==8.4.2
+PyYAML==6.0.3
+cmake==3.31.6
+ninja==1.11.1.4
+iniconfig==2.3.1
+packaging==26.3
+pluggy==1.7.0
+Pygments==2.21.0
+colorama==0.4.6 ; sys_platform == "win32"
